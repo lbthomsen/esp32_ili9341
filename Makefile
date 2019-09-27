@@ -3,7 +3,7 @@
 # project subdirectory.
 #
 
-PROJECT_NAME := hello-world
+PROJECT_NAME := esp32_st7789
 
 # Add new components (source folders)
 # Must be before include $(IDF_PATH)/make/project.mk

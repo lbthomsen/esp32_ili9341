@@ -1,5 +1,6 @@
 # LittlevGL project for ESP32
 
+NOTICE!  This is currently a work in progress - it does not yet work on st7789
 
 ## Get started 
 ### Install the ESP32 SDK

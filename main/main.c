@@ -20,8 +20,8 @@
 
 #include "drv/disp_spi.h"
 #include "drv/ili9341.h"
-#include "drv/tp_spi.h"
-#include "drv/xpt2046.h"
+//#include "drv/tp_spi.h"
+//#include "drv/xpt2046.h"
 
 static void IRAM_ATTR lv_tick_task(void);
 
@@ -32,8 +32,8 @@ void app_main()
 	disp_spi_init();
 	ili9341_init();
 
-	tp_spi_init();
-    xpt2046_init();
+	//tp_spi_init();
+    //xpt2046_init();
 
     static lv_color_t buf1[DISP_BUF_SIZE];
     static lv_color_t buf2[DISP_BUF_SIZE];

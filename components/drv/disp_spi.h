@@ -14,14 +14,15 @@ extern "C" {
  *      INCLUDES
  *********************/
 #include <stdint.h>
+#include "sdkconfig.h"
 
 /*********************
  *      DEFINES
  *********************/
 
-#define DISP_SPI_MOSI 23
-#define DISP_SPI_CLK  19
-#define DISP_SPI_CS   22
+#define DISP_SPI_MOSI CONFIG_DISP_SPI_MOSI
+#define DISP_SPI_CLK  CONFIG_DISP_SPI_CLK
+#define DISP_SPI_CS   CONFIG_DISP_SPI_CS
 
 
 /**********************
