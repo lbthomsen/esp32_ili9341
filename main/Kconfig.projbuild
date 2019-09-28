@@ -1,5 +1,19 @@
 menu "ST7789"
 
+    config DISP_HOR_RES
+        int "Display Horizontal Resolution"
+        range 0 2000
+        default 240
+        help
+            The horizontal resolution of the display.
+
+    config DISP_VER_RES
+        int "Display Vertical Resolution"
+        range 0 2000
+        default 240
+        help
+            The vertical resolution of the display.
+
     config DISP_SPI_SPEED
         int "Display SPI Speed in MHz"
         range 0 80
@@ -50,5 +64,12 @@ menu "ST7789"
         default 5
         help
             GPIO used to control display Backlight
+
+    config DISP_BCKL_ACTIVE_LVL
+        int "Display Backlight Active Level"
+        range 0 1
+        default 1
+        help
+            Which level turn on the backlight
 
 endmenu

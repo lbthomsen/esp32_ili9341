@@ -19,7 +19,7 @@
 
 
 #include "drv/disp_spi.h"
-#include "drv/ili9341.h"
+#include "drv/st7789.h"
 //#include "drv/tp_spi.h"
 //#include "drv/xpt2046.h"
 
@@ -30,7 +30,7 @@ void app_main()
 	lv_init();
 
 	disp_spi_init();
-	ili9341_init();
+	st7789_init();
 
 	//tp_spi_init();
     //xpt2046_init();
@@ -42,7 +42,7 @@ void app_main()
 
 	lv_disp_drv_t disp_drv;
 	lv_disp_drv_init(&disp_drv);
-	disp_drv.flush_cb = ili9341_flush;
+	disp_drv.flush_cb = st7789_flush;
 	disp_drv.buffer = &disp_buf;
 	lv_disp_drv_register(&disp_drv);
 

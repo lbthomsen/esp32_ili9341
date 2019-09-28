@@ -1,11 +1,11 @@
 # LittlevGL project for ESP32
 
-NOTICE!  This is currently a work in progress - it does not yet work on st7789
+NOTICE!  This is currently a work in progress - it does not yet work on st7789!
 
 ## Get started 
 ### Install the ESP32 SDK
 1. Install ESP-IDF: http://esp-idf.readthedocs.io/en/latest/
-2. Get this projects: `git clone --recurse-submodules https://github.com/littlevgl/esp32_ili9341.git`
+2. Get this projects: `git clone --recurse-submodules https://github.com/lbthomsen/esp32_st7789.git`
 
 ### Add LittlevGL to the build
 To link LittlevGL (lvgl) and lv_examples with ESP-IDF you need to add a **component.mk** file to each directory.

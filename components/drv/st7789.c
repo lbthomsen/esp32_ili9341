@@ -6,11 +6,12 @@
 /*********************
  *      INCLUDES
  *********************/
-#include "ili9341.h"
+#include "st7789.h"
 #include "disp_spi.h"
 #include "driver/gpio.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "sdkconfig.h"
 
 /*********************
  *      DEFINES
@@ -30,9 +31,9 @@ typedef struct {
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-static void ili9341_send_cmd(uint8_t cmd);
-static void ili9341_send_data(void * data, uint16_t length);
-static void ili9341_send_color(void * data, uint16_t length);
+static void st7789_send_cmd(uint8_t cmd);
+static void st7789_send_data(void * data, uint16_t length);
+static void st7789_send_color(void * data, uint16_t length);
 
 /**********************
  *  STATIC VARIABLES
@@ -46,9 +47,9 @@ static void ili9341_send_color(void * data, uint16_t length);
  *   GLOBAL FUNCTIONS
  **********************/
 
-void ili9341_init(void)
+void st7789_init(void)
 {
-	lcd_init_cmd_t ili_init_cmds[]={
+	lcd_init_cmd_t st7789_init_cmds[]={
 		{0xCF, {0x00, 0x83, 0X30}, 3},
 		{0xED, {0x64, 0x03, 0X12, 0X81}, 4},
 		{0xE8, {0x85, 0x01, 0x79}, 3},
@@ -77,26 +78,26 @@ void ili9341_init(void)
 	};
 
 	//Initialize non-SPI GPIOs
-	gpio_set_direction(ILI9341_DC, GPIO_MODE_OUTPUT);
-	gpio_set_direction(ILI9341_RST, GPIO_MODE_OUTPUT);
-	gpio_set_direction(ILI9341_BCKL, GPIO_MODE_OUTPUT);
+	gpio_set_direction(ST7789_DC, GPIO_MODE_OUTPUT);
+	gpio_set_direction(ST7789_RST, GPIO_MODE_OUTPUT);
+	gpio_set_direction(ST7789_BCKL, GPIO_MODE_OUTPUT);
 
 	//Reset the display
-	gpio_set_level(ILI9341_RST, 0);
+	gpio_set_level(ST7789_RST, 0);
 	vTaskDelay(100 / portTICK_RATE_MS);
-	gpio_set_level(ILI9341_RST, 1);
+	gpio_set_level(ST7789_RST, 1);
 	vTaskDelay(100 / portTICK_RATE_MS);
 
 
-	printf("ILI9341 initialization.\n");
+	printf("ST7789 initialization.\n");
 
 
 	//Send all the commands
 	uint16_t cmd = 0;
-	while (ili_init_cmds[cmd].databytes!=0xff) {
-		ili9341_send_cmd(ili_init_cmds[cmd].cmd);
-		ili9341_send_data(ili_init_cmds[cmd].data, ili_init_cmds[cmd].databytes&0x1F);
-		if (ili_init_cmds[cmd].databytes & 0x80) {
+	while (st7789_init_cmds[cmd].databytes!=0xff) {
+		st7789_send_cmd(st7789_init_cmds[cmd].cmd);
+		st7789_send_data(st7789_init_cmds[cmd].data, st7789_init_cmds[cmd].databytes&0x1F);
+		if (st7789_init_cmds[cmd].databytes & 0x80) {
 			vTaskDelay(100 / portTICK_RATE_MS);
 		}
 		cmd++;
@@ -104,37 +105,37 @@ void ili9341_init(void)
 
 	///Enable backlight
 	printf("Enable backlight.\n");
-	gpio_set_level(ILI9341_BCKL, ILI9341_BCKL_ACTIVE_LVL);
+	gpio_set_level(ST7789_BCKL, CONFIG_DISP_BCKL_ACTIVE_LVL);
 }
 
 
-void ili9341_flush(lv_disp_drv_t * drv, const lv_area_t * area, lv_color_t * color_map)
+void st7789_flush(lv_disp_drv_t * drv, const lv_area_t * area, lv_color_t * color_map)
 {
 	uint8_t data[4];
 
 	/*Column addresses*/
-	ili9341_send_cmd(0x2A);
+	st7789_send_cmd(0x2A);
 	data[0] = (area->x1 >> 8) & 0xFF;
 	data[1] = area->x1 & 0xFF;
 	data[2] = (area->x2 >> 8) & 0xFF;
 	data[3] = area->x2 & 0xFF;
-	ili9341_send_data(data, 4);
+	st7789_send_data(data, 4);
 
 	/*Page addresses*/
-	ili9341_send_cmd(0x2B);
+	st7789_send_cmd(0x2B);
 	data[0] = (area->y1 >> 8) & 0xFF;
 	data[1] = area->y1 & 0xFF;
 	data[2] = (area->y2 >> 8) & 0xFF;
 	data[3] = area->y2 & 0xFF;
-	ili9341_send_data(data, 4);
+	st7789_send_data(data, 4);
 
 	/*Memory write*/
-	ili9341_send_cmd(0x2C);
+	st7789_send_cmd(0x2C);
 
 
 	uint32_t size = lv_area_get_width(area) * lv_area_get_height(area);
 
-	ili9341_send_color((void*)color_map, size * 2);
+	st7789_send_color((void*)color_map, size * 2);
 
 }
 
@@ -143,20 +144,20 @@ void ili9341_flush(lv_disp_drv_t * drv, const lv_area_t * area, lv_color_t * col
  **********************/
 
 
-static void ili9341_send_cmd(uint8_t cmd)
+static void st7789_send_cmd(uint8_t cmd)
 {
-	gpio_set_level(ILI9341_DC, 0);	 /*Command mode*/
+	gpio_set_level(ST7789_DC, 0);	 /*Command mode*/
 	disp_spi_send_data(&cmd, 1);
 }
 
-static void ili9341_send_data(void * data, uint16_t length)
+static void st7789_send_data(void * data, uint16_t length)
 {
-	gpio_set_level(ILI9341_DC, 1);	 /*Data mode*/
+	gpio_set_level(ST7789_DC, 1);	 /*Data mode*/
 	disp_spi_send_data(data, length);
 }
 
-static void ili9341_send_color(void * data, uint16_t length)
+static void st7789_send_color(void * data, uint16_t length)
 {
-    gpio_set_level(ILI9341_DC, 1);   /*Data mode*/
+    gpio_set_level(ST7789_DC, 1);   /*Data mode*/
     disp_spi_send_colors(data, length);
 }

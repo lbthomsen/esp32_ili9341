@@ -1,10 +1,10 @@
 /**
- * @file tp_spi.h
+ * @file lv_templ.h
  *
  */
 
-#ifndef TP_SPI_H
-#define TP_SPI_H
+#ifndef ST7789_H
+#define ST7789_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -13,19 +13,16 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include <stdint.h>
+#include "lvgl/lvgl.h"
+#include "sdkconfig.h"
 
 /*********************
  *      DEFINES
  *********************/
-
-#define ENABLE_TOUCH_INPUT  TOUCH_SUPPORT
-
-#define TP_SPI_MOSI 32
-#define TP_SPI_MISO 35
-#define TP_SPI_CLK  26
-#define TP_SPI_CS   33
-
+#define DISP_BUF_SIZE (LV_HOR_RES_MAX * 40)
+#define ST7789_DC   CONFIG_DISP_DC
+#define ST7789_RST  CONFIG_DISP_RST
+#define ST7789_BCKL CONFIG_DISP_BCKL
 
 /**********************
  *      TYPEDEFS
@@ -34,8 +31,9 @@ extern "C" {
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
-void tp_spi_init(void);
-uint8_t tp_spi_xchg(uint8_t data_send);
+
+void st7789_init(void);
+void st7789_flush(lv_disp_drv_t * drv, const lv_area_t * area, lv_color_t * color_map);
 
 /**********************
  *      MACROS
@@ -46,4 +44,4 @@ uint8_t tp_spi_xchg(uint8_t data_send);
 } /* extern "C" */
 #endif
 
-#endif /*TP_SPI_H*/
+#endif /* ST7789_H */

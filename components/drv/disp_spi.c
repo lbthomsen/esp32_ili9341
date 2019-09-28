@@ -15,7 +15,7 @@
 #include <freertos/semphr.h>
 #include "freertos/task.h"
 #include "lvgl/lvgl.h"
-#include "ili9341.h"
+#include "st7789.h"
 #include "sdkconfig.h"
 
 /*********************
@@ -56,7 +56,7 @@ void disp_spi_init(void)
             .sclk_io_num=DISP_SPI_CLK,
             .quadwp_io_num=-1,
             .quadhd_io_num=-1,
-            .max_transfer_sz = DISP_BUF_SIZE * 2,
+            .max_transfer_sz = DISP_BUF_SIZE * 2, // defined currently in st7789 - which is silly!
     };
 
     spi_device_interface_config_t devcfg={
